@@ -1,8 +1,17 @@
 from rest_framework import serializers
 from tags.models import Tag
 
+#serializer is used for data validation & Tag creation
+#write operation into the database
+class WritetagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
 
-class TagSerializer(serializers.ModelSerializer):
+
+#serializer used to convert orm into json data
+#read operation from the database
+class ReadTagSerializer(serializers.ModelSerializer):
 
     #Formating some fileds which are present in the models
 
