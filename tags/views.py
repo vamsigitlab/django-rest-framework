@@ -4,6 +4,7 @@ from tags.serializers import WritetagSerializer, ReadTagSerializer
 from django.utils.text import slugify
 from tags.models import Tag
 from rest_framework import status
+from django.core.cache import cache
 # Create your views here.
 
 
@@ -47,9 +48,17 @@ class DetailTagView(APIView):
 
     def get(self, request, slug):
         try:
-            tag_object = Tag.objects.get(slug=slug)
-            json_data = ReadTagSerializer(instance=tag_object).data
-            return Response(json_data, status=status.HTTP_200_OK)
+            cache_key = f"tag-{slug}"
+            cached_data = cache.get(cache_key)
+            if cached_data:
+                print("comming from the cache")
+                return Response(cached_data, status=status.HTTP_200_OK)
+            else:
+                tag_object = Tag.objects.get(slug=slug)
+                json_data = ReadTagSerializer(instance=tag_object).data
+                cache.set(cache_key, json_data)
+                print("generated the data and caching the data")
+                return Response(json_data, status=status.HTTP_200_OK)
         except Tag.DoesNotExist as e:
             return Response({"message": "Tag does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Tag.MultipleObjectsReturned as e :
