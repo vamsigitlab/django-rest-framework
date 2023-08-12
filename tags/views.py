@@ -66,3 +66,18 @@ class DetailTagView(APIView):
         
     
 
+#Write Operations
+#Read operations
+#High number of write operations like update, modify etc in this it's not good to implement the cache
+#High number of read operations in this case we can implement the cache
+
+
+class ListTagView(APIView):
+
+    def get(self, request):
+        try:
+            query_set = Tag.objects.all()
+            response_data = ReadTagSerializer(instance=query_set, many=True).data
+            return Response(data=response_data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "Unable to fetch the tags list"}, status=status.HTTP_400_BAD_REQUEST)
