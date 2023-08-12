@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from tags.models import Tag
 from rest_framework import status
 from django.core.cache import cache
+from rest_framework.generics import RetrieveAPIView, ListAPIView
 # Create your views here.
 
 
@@ -81,3 +82,19 @@ class ListTagView(APIView):
             return Response(data=response_data, status=status.HTTP_200_OK)
         except:
             return Response({"message": "Unable to fetch the tags list"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+#Generic View ----> RetrieveAPIView, ListAPIView
+
+class DetailTagV2View(RetrieveAPIView):
+    print("Inside the Retrive API view")
+    queryset = Tag.objects.all()
+    serializer_class = ReadTagSerializer
+    lookup_field = "slug"
+
+
+
+class ListTagV2View(ListAPIView):
+    print("Inside the List API view")
+    queryset = Tag.objects.all()
+    serializer_class = ReadTagSerializer
