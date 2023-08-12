@@ -2,3 +2,6 @@ drf_venv
 db.sqlite3
 *.pyc
 *__pycache__
+redis
+
+dump.rdb

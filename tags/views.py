@@ -51,7 +51,7 @@ class DetailTagView(APIView):
             json_data = ReadTagSerializer(instance=tag_object).data
             return Response(json_data, status=status.HTTP_200_OK)
         except Tag.DoesNotExist as e:
-            return Response({"message": "Tag does not exist"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Tag does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Tag.MultipleObjectsReturned as e :
             return Response({"message": "Multiple tags are available"}, status=status.HTTP_400_BAD_REQUEST)
         
