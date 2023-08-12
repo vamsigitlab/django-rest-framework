@@ -100,3 +100,15 @@ class ListTagV2View(ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = ReadTagSerializer
     pagination_class = StandardResultsSetPagination
+
+
+
+class DeleteTagView(APIView):
+
+    def post(self, request, slug):
+        try:
+            tag_object = Tag.objects.get(slug=slug)
+            tag_object.delete()
+            return Response({"message": f"Deleted the tag with slug {slug}"}, status=status.HTTP_200_OK)
+        except Tag.DoesNotExist as e:
+            return Response({"message": "Unable to delete"}, status=status.HTTP_400_BAD_REQUEST)
