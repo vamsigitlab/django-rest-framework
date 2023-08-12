@@ -6,6 +6,7 @@ from tags.models import Tag
 from rest_framework import status
 from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView, ListAPIView
+from tags.filters import StandardResultsSetPagination
 # Create your views here.
 
 
@@ -98,3 +99,4 @@ class ListTagV2View(ListAPIView):
     print("Inside the List API view")
     queryset = Tag.objects.all()
     serializer_class = ReadTagSerializer
+    pagination_class = StandardResultsSetPagination
