@@ -7,6 +7,9 @@ from rest_framework import status
 from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView, ListAPIView
 from tags.filters import StandardResultsSetPagination
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from drf_project.settings import REST_FRAMEWORK
 # Create your views here.
 
 
@@ -28,6 +31,7 @@ class CreateTagView(APIView):
         # IMPORTANT!!!
         #Use case -1
         #For write operation we use data=request.data
+        print("request user", request.user)
         serializer =  WritetagSerializer(data=request.data)
         if serializer.is_valid():
             #if serializer is valid we are creating the tag
@@ -94,13 +98,16 @@ class DetailTagV2View(RetrieveAPIView):
     lookup_field = "slug"
 
 
-
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ListTagV2View(ListAPIView):
     print("Inside the List API view")
     queryset = Tag.objects.all()
     serializer_class = ReadTagSerializer
     pagination_class = StandardResultsSetPagination
-
+    permission_classes = REST_FRAMEWORK.get('DEFAULT_PERMISSION_CLASSES')
+    def list(self, request, *args, **kwargs):
+        print("request user", request.user)
+        return super().list(request, *args, **kwargs)
 
 
 class DeleteTagView(APIView):
