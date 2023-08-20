@@ -6,6 +6,7 @@ from rest_framework import status
 from django.contrib.auth.models import auth
 from authentication.serializer import ReadUserSerializer
 from authentication.permissions import IsUserActive
+from rest_framework.pagination import PageNumberPagination
 # Create your views here.
 
 
@@ -42,12 +43,21 @@ class SignupView(APIView):
         else:
             return Response({"success": False, "message": "Unauthenticated"}, status=status.HTTP_400_BAD_REQUEST)
         
+class LargePaginateResponse(PageNumberPagination):
+    page_size = 10
+    page_query_param = 'page_size'
+    max_page_size = 100
+
 
 class UserListView(APIView):
     permission_classes = [IsUserActive, ]
     
     def get(self, request):
-        users = User.objects.all()
-        serializer_data = ReadUserSerializer(instance=users, many=True)
-        return Response(data=serializer_data.data, status=status.HTTP_200_OK)
+        queryset = User.objects.all()
+        paginate_class = LargePaginateResponse()
+        paginate_queryset = paginate_class.paginate_queryset(queryset=queryset, request=request)
+        serializer_data = ReadUserSerializer(instance=paginate_queryset, many=True)
+        paginate_response = paginate_class.get_paginated_response(data=serializer_data.data)
+        paginate_response =True
+        return paginate_response
 

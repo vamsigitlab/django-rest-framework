@@ -143,7 +143,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'authentication.permissions.IsUserAuthenticated',
         'authentication.permissions.IsUserActive',
-        'authentication.permissions.IsAdminUser',
     ),
 }
 
