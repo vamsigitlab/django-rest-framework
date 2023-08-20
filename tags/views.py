@@ -92,7 +92,6 @@ class ListTagView(APIView):
 #Generic View ----> RetrieveAPIView, ListAPIView
 
 class DetailTagV2View(RetrieveAPIView):
-    print("Inside the Retrive API view")
     queryset = Tag.objects.all()
     serializer_class = ReadTagSerializer
     lookup_field = "slug"
@@ -100,7 +99,6 @@ class DetailTagV2View(RetrieveAPIView):
 
 @method_decorator(cache_page(60 * 5), name='dispatch')
 class ListTagV2View(ListAPIView):
-    print("Inside the List API view")
     queryset = Tag.objects.all()
     serializer_class = ReadTagSerializer
     pagination_class = StandardResultsSetPagination
