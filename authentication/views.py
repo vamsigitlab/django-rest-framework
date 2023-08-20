@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from authentication.models import User
 from rest_framework import status
 from django.contrib.auth.models import auth
+from authentication.serializer import ReadUserSerializer
 # Create your views here.
 
 
@@ -40,3 +41,11 @@ class SignupView(APIView):
         else:
             return Response({"success": False, "message": "Unauthenticated"}, status=status.HTTP_400_BAD_REQUEST)
         
+
+class UserListView(APIView):
+
+    def get(self, request):
+        users = User.objects.all()
+        serializer_data = ReadUserSerializer(instance=users, many=True)
+        return Response(data=serializer_data.data, status=status.HTTP_200_OK)
+
