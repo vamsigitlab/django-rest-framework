@@ -5,6 +5,7 @@ from authentication.models import User
 from rest_framework import status
 from django.contrib.auth.models import auth
 from authentication.serializer import ReadUserSerializer
+from authentication.permissions import IsUserActive
 # Create your views here.
 
 
@@ -43,7 +44,8 @@ class SignupView(APIView):
         
 
 class UserListView(APIView):
-
+    permission_classes = [IsUserActive, ]
+    
     def get(self, request):
         users = User.objects.all()
         serializer_data = ReadUserSerializer(instance=users, many=True)
